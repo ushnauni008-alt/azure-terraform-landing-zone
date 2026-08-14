@@ -3,3 +3,8 @@ module "resource_group" {
   resource_groups = var.rgs
 }
 
+module "virtual_network" {
+  source           = "./Modules/azurerm_virtual_network"
+  virtual_networks = var.vnets
+
+}
