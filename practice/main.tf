@@ -1,4 +1,5 @@
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-usha"
-  location = "eastus"
+module "resource_group" {
+  source          = "./Modules/azurerm_resource_group"
+  resource_groups = var.rgs
 }
+
