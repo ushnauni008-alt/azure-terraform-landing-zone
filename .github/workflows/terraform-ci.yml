@@ -33,6 +33,16 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
         working-directory: ./practice
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+
+      - name: TFLint Init
+        run: tflint --init
+        working-directory: ./practice
+
+      - name: TFLint
+        run: tflint --recursive
+        working-directory: ./practice
       - name: Terraform Plan
         run: terraform plan -no-color
         working-directory: ./practice     
