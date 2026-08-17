@@ -18,7 +18,7 @@ The goal of this project is to understand how Azure infrastructure can be create
 - Terraform formatting and validation
 - TFLint checks
 - Gitleaks for basic secret scanning
-- GitHub Actions workflow for Terraform checks
+-GitHub Actions CI workflow to run Terraform checks on Pull Requests
   
 ## Repository Structure
 
