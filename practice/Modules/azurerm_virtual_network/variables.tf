@@ -3,7 +3,7 @@ variable "virtual_networks" {
     name                = string
     location            = string
     resource_group_name = string
-    address_space       = set(string)
+    address_space       = list(string)
     }
   ))
 

@@ -7,8 +7,8 @@ rgs = {
 vnets = {
   vnet1 = {
     name                = "practice_vnet"
-    location            = "eastus"
-    resource_group_name = "rg-usha"
+    location            = module.resource_group["rg1"].location
+    resource_group_name = module.resource_group["rg1"].name
     address_space       = ["10.0.0.0/16"]
   }
 }
@@ -16,8 +16,8 @@ vnets = {
 subnets = {
   subnet1 = {
     name                 = "practice_subnet"
-    resource_group_name  = "rg-usha"
-    virtual_network_name = "practice_vnet"
+    resource_group_name  = module.resource_group["rg1"].name
+    virtual_network_name = module.virtual_network["vnet1"].name
     address_prefixes     = ["10.0.0.0/24"]
   }
 
