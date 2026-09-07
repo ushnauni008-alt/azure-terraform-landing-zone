@@ -1,0 +1,6 @@
+﻿"ResourceType","Key","Name","Location","ParentKey","AddressSpace"
+"ResourceGroup","rg1","rg-client-dev","eastus",,
+"VNet","vnet1","vnet-client-dev","eastus","rg1","10.0.0.0/16"
+"Subnet","subnet1","subnet-web","eastus","vnet1","10.0.1.0/24"
+"Subnet","subnet2","subnet-app","eastus","vnet1","10.0.2.0/24"
+"Subnet","subnet3","subnet-db","eastus","vnet1","10.0.3.0/24"
