@@ -1,0 +1,116 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - "feature/**"
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # 2. Install ImportExcel module
+      - name: Install ImportExcel Module
+        shell: pwsh
+        run: |
+          Install-Module ImportExcel -Scope CurrentUser -Force
+
+
+      # 3. Generate CSV and terraform.tfvars.json
+      - name: Generate Terraform Input
+        shell: pwsh
+        run: ./scripts/generate-tfvars.ps1
+
+
+      # 4. Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+
+      # 5. Terraform format check
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        working-directory: ./Terraform
+
+
+      # 6. Feature branch init without Azure backend
+      - name: Terraform Init - Feature Branch
+        if: github.event_name == 'push'
+        run: terraform init -backend=false -input=false
+        working-directory: ./Terraform
+
+
+      # 7. Feature branch validation
+      - name: Terraform Validate - Feature Branch
+        if: github.event_name == 'push'
+        run: terraform validate
+        working-directory: ./Terraform
+
+
+      # 8. Setup TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+
+
+      # 9. TFLint Init
+      - name: TFLint Init
+        run: tflint --init
+        working-directory: ./Terraform
+
+
+      # 10. Run TFLint
+      - name: TFLint
+        run: tflint --recursive
+        working-directory: ./Terraform
+
+
+      # 11. Secret scan
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      # 12. Azure Login only during PR to main
+      - name: Azure Login
+        if: github.event_name == 'pull_request'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+      # 13. Terraform init with Azure access for PR
+      - name: Terraform Init - Pull Request
+        if: github.event_name == 'pull_request'
+        run: terraform init -input=false
+        working-directory: ./Terraform
+
+
+      # 14. Terraform validate for PR
+      - name: Terraform Validate - Pull Request
+        if: github.event_name == 'pull_request'
+        run: terraform validate
+        working-directory: ./Terraform
+
+
+      # 15. Terraform plan only during PR
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -input=false -no-color
+        working-directory: ./Terraform
