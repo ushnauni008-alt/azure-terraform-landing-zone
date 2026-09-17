@@ -6,15 +6,11 @@
 *.tfstate.*
 
 # Crash log files
-crash.loggit status
+crash.log
 crash.*.log
 
 # Ignore tfvars files because they may contain sensitive values
 *.tfvars
-*.tfvars.json
-
-# Allow this specific non-sensitive tfvars file
-!practice/terraform.tfvars
 *.tfvars.json
 
 # Ignore override files as they are usually used to override resources locally and so
@@ -32,6 +28,9 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+*.tfplan
+tfplan*
+
 
 # Ignore CLI configuration files
 .terraformrc
@@ -42,6 +41,8 @@ terraform.rc
 
 # Optional: ignore plan files saved before destroying Terraform configuration
 # Uncomment the line below if you want to ignore planout files.
-# planout# Infracost generated files
+# planout
+
+# Infracost generated files
 .infracost/
 infracost-base.json
